@@ -1,0 +1,15 @@
+{
+  "name": "boulder-property-analyzer-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for Boulder Property Analyzer",
+  "main": "app.js",
+  "scripts": {
+    "start": "python -m http.server 3000",
+    "dev": "python -m http.server 3000"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "keywords": ["property", "analysis", "boulder"],
+  "author": "",
+  "license": "MIT"
+}
