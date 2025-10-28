@@ -19,6 +19,8 @@ from typing import Dict, List, Optional
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 # Import the downloader and OCR modules
@@ -26,6 +28,16 @@ from boulder_downloader_clean import BoulderPortalDownloader
 from improved_ocr_extractor import improved_ocr_process
 
 app = FastAPI(title="Boulder Property Analyzer API", version="1.0.0")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.mount("/static", StaticFiles(directory="."), name ="static")
+
 @app.get("/")
 def root():
     return {"status": "ok"}
@@ -33,6 +45,10 @@ def root():
 @app.get("/healthz")
 def healthz():
     return {"ok": True}
+
+@app.get("/", include_in_schema=False)
+def root():
+    return FileResponse(os.path.join(".","index.html"))
 
 # CORS middleware for frontend communication
 app.add_middleware(
@@ -314,7 +330,7 @@ Format your response as a clean, professional report without visible markdown fo
 
 **TITLE EXAMINER'S REPORT**
 
-**PROPERTY IDENTIFICATION**
+**1. PROPERTY IDENTIFICATION**
 Parcel Number (APN or PID): 
 Subdivision / Plat: 
 Legal Description: 
@@ -323,10 +339,10 @@ Recording Information:
 County / Jurisdiction: 
 Land Use / Zoning: 
 
-**LEGAL DESCRIPTION ANALYSIS**
+**2. LEGAL DESCRIPTION ANALYSIS**
 Provide the legal description found in the document and note any inconsistencies or issues.
 
-**CURRENT OWNERSHIP**
+**3. CURRENT OWNERSHIP**
 Owner(s) of Record: 
 Ownership Type: 
 Grantor(s): 
@@ -334,17 +350,17 @@ Deed Type:
 Date of Transfer: 
 Source Document(s): 
 
-**CHAIN OF TITLE**
+**4. CHAIN OF TITLE**
 List prior transfers or ownership changes mentioned in the document. If none found, state "No prior transfers identified."
 
-**LIENS AND ENCUMBRANCES**
+**5. LIENS AND ENCUMBRANCES**
 Mortgage or Deed of Trust: 
 Lienholders or Secured Parties: 
 Judgment or Tax Liens: 
 UCC Filings: 
 Release or Satisfaction Documents: 
 
-**EASEMENTS & RIGHTS-OF-WAY**
+**6. EASEMENTS & RIGHTS-OF-WAY**
 Beneficiary: 
 Burdened Property: 
 Purpose: 
@@ -352,16 +368,16 @@ Recorded Location:
 Duration / Conditions: 
 If none found, state "No easements identified."
 
-**COVENANTS, CONDITIONS & RESTRICTIONS**
+**7. COVENANTS, CONDITIONS & RESTRICTIONS**
 List any CC&Rs, declarations, HOA rules, or use limitations. If none found, state "No CC&Rs identified."
 
-**TAXES & ASSESSMENTS**
+**8. TAXES & ASSESSMENTS**
 Assessor's Parcel Number: 
 Current Assessed Owner: 
 Tax Status: 
 Special Assessments: 
 
-**EXCEPTIONS & OBSERVATIONS**
+**9. EXCEPTIONS & OBSERVATIONS**
 List any exceptions to title or relevant observations:
 • Gaps or inconsistencies in ownership chain
 • Missing releases or partial reconveyances  
@@ -369,7 +385,7 @@ List any exceptions to title or relevant observations:
 • Potential survey or boundary issues
 • Any red flags requiring follow-up research
 
-**SUMMARY OPINION**
+**10. SUMMARY OPINION**
 Current Owner: 
 Title Status: 
 Key Issues: 
