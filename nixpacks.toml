@@ -1,11 +1,17 @@
 [phases.setup]
-nixPkgs = ["python39", "chromium", "tesseract", "poppler_utils"]
+nixPkgs = ['python312', 'chromium', 'tesseract', 'poppler_utils']
 
 [phases.install]
-cmds = ["pip install -r requirements.txt"]
-
-[phases.build]
-cmds = ["echo 'Build complete'"]
+cmds = [
+  'python3 -m pip install --upgrade pip',
+  'python3 -m pip install -r requirements.txt',
+  'python3 -m pip install playwright',
+  'playwright install --with-deps chromium'
+]
 
 [start]
-cmd = "python3 app_v2_clean.py"
+cmd = 'uvicorn app_v2_clean:app --host 0.0.0.0 --port ${PORT:-8000}'
+
+[variables]
+NIXPACKS_PYTHON_VERSION = '3.12'
+NIXPACKS_PYTHON_PACKAGE_MANAGER = 'requirements'
