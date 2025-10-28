@@ -1,17 +1,30 @@
+# nixpacks.toml
+
 [phases.setup]
-nixPkgs = ['python312', 'chromium', 'tesseract', 'poppler_utils']
+# Ensure Python has pip + build tooling, plus your system deps
+nixPkgs = [
+  "python312",
+  "python312Packages.pip",
+  "python312Packages.setuptools",
+  "python312Packages.wheel",
+  "chromium",
+  "tesseract",
+  "poppler_utils"
+]
 
 [phases.install]
+# Use python -m pip so PATH quirks don't matter
 cmds = [
-  'python3 -m pip install --upgrade pip',
-  'python3 -m pip install -r requirements.txt',
-  'python3 -m pip install playwright',
-  'playwright install --with-deps chromium'
+  "python3 -m pip install --upgrade pip setuptools wheel",
+  "python3 -m pip install -r requirements.txt",
+  "python3 -m pip install playwright",
+  "playwright install --with-deps chromium"
 ]
 
 [start]
-cmd = 'uvicorn app_v2_clean:app --host 0.0.0.0 --port ${PORT:-8000}'
+# Bind to Railway's $PORT
+cmd = "uvicorn app_v2_clean:app --host 0.0.0.0 --port ${PORT:-8000}"
 
 [variables]
-NIXPACKS_PYTHON_VERSION = '3.12'
-NIXPACKS_PYTHON_PACKAGE_MANAGER = 'requirements'
+NIXPACKS_PYTHON_VERSION = "3.12"
+NIXPACKS_PYTHON_PACKAGE_MANAGER = "requirements"
