@@ -1,24 +1,7 @@
-# nixpacks.toml
-# Keep it simple: let the Python provider handle pip/requirements,
-# then run Playwright in the build phase using the provider venv.
-
 [phases.setup]
-# System deps your app needs
-nixPkgs = [
-  "chromium",
-  "tesseract",
-  "poppler_utils"
-]
-
-# DO NOT override the Python install phase.
-# The Python provider will:
-#   - create /opt/venv
-#   - run: pip install -r requirements.txt
-# That gives us /opt/venv/bin/python and /opt/venv/bin/pip
+nixPkgs = ["chromium", "tesseract", "poppler_utils"]
 
 [phases.build]
-# Run AFTER the Python provider has finished.
-# Use the provider venv explicitly so pip/playwright are available.
 cmds = [
   "/opt/venv/bin/python -m pip install --upgrade pip",
   "/opt/venv/bin/python -m pip install playwright",
@@ -26,10 +9,8 @@ cmds = [
 ]
 
 [start]
-# Start the ASGI server bound to Railway's $PORT
 cmd = "uvicorn app_v2_clean:app --host 0.0.0.0 --port ${PORT:-8000}"
 
 [variables]
-# Ensure Python provider uses requirements.txt and Python 3.12
 NIXPACKS_PYTHON_VERSION = "3.12"
 NIXPACKS_PYTHON_PACKAGE_MANAGER = "requirements"
