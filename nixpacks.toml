@@ -1,30 +1,26 @@
-# nixpacks.toml
+# Force the Python provider to run alongside anything auto-detected (like Node)
+providers = ["...", "python"]
 
 [phases.setup]
-# Ensure Python has pip + build tooling, plus your system deps
-nixPkgs = [
-  "python312",
-  "python312Packages.pip",
-  "python312Packages.setuptools",
-  "python312Packages.wheel",
-  "chromium",
-  "tesseract",
-  "poppler_utils"
-]
+# Keep system packages you need
+# Use "..." to preserve whatever Nixpacks would normally add
+nixPkgs = ["...", "chromium", "tesseract", "poppler_utils"]
 
 [phases.install]
-# Use python -m pip so PATH quirks don't matter
+# EXTEND the provider's default install step instead of replacing it.
+# The "..." placeholder runs the default (pip install -r requirements.txt) first,
+# then we run Playwright setup.
 cmds = [
-  "python3 -m pip install --upgrade pip setuptools wheel",
-  "python3 -m pip install -r requirements.txt",
+  "...",
   "python3 -m pip install playwright",
   "playwright install --with-deps chromium"
 ]
 
 [start]
-# Bind to Railway's $PORT
+# Start the ASGI server bound to Railway's $PORT
 cmd = "uvicorn app_v2_clean:app --host 0.0.0.0 --port ${PORT:-8000}"
 
 [variables]
+# Make sure the provider chooses Python 3.12 and uses requirements.txt
 NIXPACKS_PYTHON_VERSION = "3.12"
 NIXPACKS_PYTHON_PACKAGE_MANAGER = "requirements"
