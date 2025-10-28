@@ -1,21 +1,9 @@
-# Exclude backend files from frontend deployment
-app_v2_clean.py
-boulder_downloader_clean.py
-improved_ocr_extractor.py
-requirements.txt
-boulder_storage_state.json
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Exclude frontend files from backend deployment
+app.js
+index.html
+package.json
+frontend_server.py
+railway-frontend.json
+*.html
+*.js
+*.css
