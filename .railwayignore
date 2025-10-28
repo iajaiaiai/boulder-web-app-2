@@ -1,9 +1,0 @@
-# Exclude frontend files from backend deployment
-app.js
-index.html
-package.json
-frontend_server.py
-railway-frontend.json
-*.html
-*.js
-*.css
