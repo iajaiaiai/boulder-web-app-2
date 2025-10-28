@@ -1,19 +1,28 @@
-# Force the Python provider to run alongside anything auto-detected (like Node)
-providers = ["...", "python"]
+# nixpacks.toml
+# Keep it simple: let the Python provider handle pip/requirements,
+# then run Playwright in the build phase using the provider venv.
 
 [phases.setup]
-# Keep system packages you need
-# Use "..." to preserve whatever Nixpacks would normally add
-nixPkgs = ["...", "chromium", "tesseract", "poppler_utils"]
+# System deps your app needs
+nixPkgs = [
+  "chromium",
+  "tesseract",
+  "poppler_utils"
+]
 
-[phases.install]
-# EXTEND the provider's default install step instead of replacing it.
-# The "..." placeholder runs the default (pip install -r requirements.txt) first,
-# then we run Playwright setup.
+# DO NOT override the Python install phase.
+# The Python provider will:
+#   - create /opt/venv
+#   - run: pip install -r requirements.txt
+# That gives us /opt/venv/bin/python and /opt/venv/bin/pip
+
+[phases.build]
+# Run AFTER the Python provider has finished.
+# Use the provider venv explicitly so pip/playwright are available.
 cmds = [
-  "...",
-  "python3 -m pip install playwright",
-  "playwright install --with-deps chromium"
+  "/opt/venv/bin/python -m pip install --upgrade pip",
+  "/opt/venv/bin/python -m pip install playwright",
+  "/opt/venv/bin/playwright install --with-deps chromium"
 ]
 
 [start]
@@ -21,6 +30,6 @@ cmds = [
 cmd = "uvicorn app_v2_clean:app --host 0.0.0.0 --port ${PORT:-8000}"
 
 [variables]
-# Make sure the provider chooses Python 3.12 and uses requirements.txt
+# Ensure Python provider uses requirements.txt and Python 3.12
 NIXPACKS_PYTHON_VERSION = "3.12"
 NIXPACKS_PYTHON_PACKAGE_MANAGER = "requirements"
