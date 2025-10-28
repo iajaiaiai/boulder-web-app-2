@@ -26,6 +26,13 @@ from boulder_downloader_clean import BoulderPortalDownloader
 from improved_ocr_extractor import improved_ocr_process
 
 app = FastAPI(title="Boulder Property Analyzer API", version="1.0.0")
+@app.get("/")
+def root():
+    return {"status": "ok"}
+
+@app.get("/healthz")
+def healthz():
+    return {"ok": True}
 
 # CORS middleware for frontend communication
 app.add_middleware(
