@@ -1,5 +1,7 @@
+providers = ["python"]
+
 [phases.setup]
-nixPkgs = ["nodejs_18", "npm-9_x", "chromium", "tesseract", "poppler_utils"]
+nixPkgs = ["chromium", "tesseract", "poppler_utils"]
 
 [phases.build]
 cmds = [
