@@ -2,7 +2,7 @@ const { useState, useEffect } = React;
 
 // Backend URL - use production URL when deployed, localhost for development
 const BACKEND_URL = window.location.hostname.includes('railway.app') 
-    ? 'https://boulder-web-app-2-production.up.railway.app'  // Update this with your actual Railway backend URL
+    ? 'https://web-production-6f0f9.up.railway.app'
     : window.location.hostname.includes('run.app') 
     ? 'https://boulder-backend-563085534377.us-central1.run.app'
     : 'http://localhost:8001';
