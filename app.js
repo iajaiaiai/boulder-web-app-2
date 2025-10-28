@@ -8,19 +8,21 @@ const BACKEND_URL = window.location.hostname.includes('run.app')
 function App() {
     const [query, setQuery] = useState('');
     const [limit, setLimit] = useState(5);
-    const [useLlm, setUseLlm] = useState(true);
     const [currentJob, setCurrentJob] = useState(null);
     const [jobStatus, setJobStatus] = useState(null);
     const [results, setResults] = useState(null);
     const [error, setError] = useState(null);
     const [pdfs, setPdfs] = useState([]);
 
-    // Convert markdown bold to HTML
+    // Convert markdown to sanitized HTML using Marked + DOMPurify
     const markdownToHtml = (text) => {
         if (!text) return '';
-        return text
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\n/g, '<br />');
+        try {
+            const html = window.marked.parse(text, { breaks: true });
+            return window.DOMPurify.sanitize(html);
+        } catch (e) {
+            return text;
+        }
     };
 
     const startAnalysis = async () => {
@@ -36,7 +38,8 @@ function App() {
 
             const response = await axios.post(`${BACKEND_URL}/analyze`, {
                 query: query,
-                limit: limit
+                limit: limit,
+                use_llm: true
             });
 
             console.log('🚀 Analysis started:', response.data);

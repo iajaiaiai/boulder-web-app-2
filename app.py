@@ -150,7 +150,9 @@ async def run_analysis_async(job_id: str, query: str, limit: int = 1):
         update_progress(job_id, 20, "📥 Downloading documents...")
         
         print(f"📥 Running downloader for: {query}")
-        downloader = BoulderPortalDownloader(limit=limit, headless=True)
+        # Use a session-scoped download directory to avoid cross-session contamination
+        session_download_dir = f"session_{job_id}_pdfs"
+        downloader = BoulderPortalDownloader(limit=limit, headless=True, download_dir=session_download_dir)
         
         # Run downloader
         loop = asyncio.get_event_loop()
@@ -297,7 +299,7 @@ async def run_analysis_async(job_id: str, query: str, limit: int = 1):
         try:
             print("🤖 Starting LLM analysis...")
             # Use Hugging Face API for analysis
-            HF_API_KEY = os.getenv("HUGGINGFACE_API_KEY", "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")
+            HF_API_KEY = os.getenv("HUGGINGFACE_API_KEY", "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")
             MODEL = "openai/gpt-oss-20b:together"
             
             print(f"📊 Text length for LLM: {len(combined_text)} characters")
