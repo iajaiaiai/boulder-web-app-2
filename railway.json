@@ -5,7 +5,7 @@
     "buildCommand": "echo 'Frontend static files ready'"
   },
   "deploy": {
-    "startCommand": "python3 frontend_server.py",
+    "startCommand": "python3 app_v2_clean.py",
     "healthcheckPath": "/index.html",
     "healthcheckTimeout": 100,
     "restartPolicyType": "ON_FAILURE",
