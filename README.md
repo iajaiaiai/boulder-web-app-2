@@ -34,18 +34,13 @@ A comprehensive property analysis tool for Boulder County that automatically dow
 pip install -r requirements.txt
 ```
 
-### 2. Environment Variables (Optional)
+### 2. Ready to Run!
 
-The app works out of the box with a default API key. For production or to use your own API key:
+The app works out of the box with a built-in API key. No configuration needed!
 
+**Optional:** To use your own API key:
 ```bash
 export HUGGINGFACE_API_KEY=your_api_key_here
-```
-
-Or create a `.env` file:
-```bash
-cp .env.example .env
-# Edit .env with your API key
 ```
 
 ### 3. Start Backend
