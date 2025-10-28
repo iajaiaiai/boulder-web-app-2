@@ -1,12 +1,13 @@
+# nixpacks.toml — Python-only, system Chromium, no Playwright browser download
 providers = ["python"]
 
 [phases.setup]
-# Python + system tools (Chromium from Nix, no apt)
+# Install Python and system tools (Chromium, OCR, Poppler) via Nix
 nixPkgs = ["python312", "chromium", "tesseract", "poppler_utils"]
 
 [phases.build]
-# Install only the Python package, no browser download.
-# Also ensure /usr/bin/chromium points to the Nix chromium path.
+# Install only the Playwright PYTHON package; no browser download
+# Also ensure a stable /usr/bin/chromium symlink exists
 cmds = [
   "/opt/venv/bin/python -m pip install --upgrade pip",
   "/opt/venv/bin/python -m pip install playwright",
@@ -14,17 +15,14 @@ cmds = [
 ]
 
 [start]
-# Prefer uvicorn so it binds to $PORT
+# Prefer uvicorn so it binds to $PORT on Railway
 cmd = "uvicorn app_v2_clean:app --host 0.0.0.0 --port ${PORT:-8000}"
 
 [variables]
-# Tell Playwright to skip downloading browsers and use system Chromium
+# Use system Chromium, skip the heavy Playwright browser install
 PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"
 PW_CHROMIUM_BIN = "/usr/bin/chromium"
-NIXPACKS_PYTHON_VERSION = "3.12"
-NIXPACKS_PYTHON_PACKAGE_MANAGER = "requirements"
 
-
-[variables]
+# Make the Python provider use 3.12 and requirements.txt
 NIXPACKS_PYTHON_VERSION = "3.12"
 NIXPACKS_PYTHON_PACKAGE_MANAGER = "requirements"
