@@ -299,7 +299,7 @@ async def run_analysis_async(job_id: str, query: str, limit: int = 1):
         try:
             print("🤖 Starting LLM analysis...")
             # Use Hugging Face API for analysis
-            HF_API_KEY = os.getenv("HUGGINGFACE_API_KEY", "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")
+            HF_API_KEY = os.getenv("HUGGINGFACE_API_KEY", "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")
             MODEL = "openai/gpt-oss-20b:together"
             
             print(f"📊 Text length for LLM: {len(combined_text)} characters")
